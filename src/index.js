@@ -3,16 +3,18 @@ const cors = require('cors');
 require('dotenv').config();
 require('./config/db'); 
 
-// 1. IMPORTAR AS ROTAS: sempre que criarem um arquivo novo de rotas, vamos importa aqui
+// 1. IMPORTAR AS ROTAS
 const authRoutes = require('./routes/authRoutes'); 
+const relationRoutes = require('./routes/relationRoutes');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// 2. ATIVAR AS ROTAS: avisa pro Express para usar as rotas importadas
+// 2. ATIVAR AS ROTAS
 app.use(authRoutes); 
+app.use(relationRoutes);
 
 // apenas pra testar inicialmente kk
 app.get('/', (req, res) => {
@@ -21,5 +23,5 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`sservidor rodando na porta ${PORT}`);
+  console.log(`servidor rodando na porta ${PORT}`);
 });
