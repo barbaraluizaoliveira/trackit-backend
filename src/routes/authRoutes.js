@@ -1,9 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authController = require('../controllers/authController'); //layza vai criar este arquivo depois
 
-//rotas publicas que layza vai implementar
-router.post('/auth/signup', authController.signUp);
-router.post('/auth/login', authController.login);
+const authController = require("../controllers/authController");
+
+router.get("/", (req, res) => {
+  res.json({ message: "rota auth funcionando" });
+});
+
+router.post("/signup", authController.signUp);
+router.post("/login", authController.login);
+router.post("/logout", authController.logout);
 
 module.exports = router;
