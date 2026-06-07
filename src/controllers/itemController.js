@@ -12,11 +12,11 @@ const itemController = {
 
   createItem: async (req, res) => {
     try {
-      const { name, description, category } = req.body;
+      const { name, description } = req.body;
       if (!name) {
         return res.status(400).json({ message: 'O nome do item é obrigatório.' });
       }
-      const item = await appModel.createItem(req.userId, { name, description, category });
+      const item = await appModel.createItem(req.userId, name, description);
       return res.status(201).json(item);
     } catch (error) {
       return res.status(500).json({ message: 'Erro ao criar item.', error: error.message });
@@ -26,8 +26,8 @@ const itemController = {
   updateItem: async (req, res) => {
     try {
       const { id } = req.params;
-      const { name, description, category } = req.body;
-      const item = await appModel.updateItem(req.userId, id, { name, description, category });
+      const { name, description } = req.body;
+      const item = await appModel.updateItem(id, req.userId, name, description);
       if (!item) {
         return res.status(404).json({ message: 'Item não encontrado ou sem permissão.' });
       }
@@ -40,7 +40,7 @@ const itemController = {
   deleteItem: async (req, res) => {
     try {
       const { id } = req.params;
-      const deleted = await appModel.deleteItem(req.userId, id);
+      const deleted = await appModel.deleteItem(id, req.userId);
       if (!deleted) {
         return res.status(404).json({ message: 'Item não encontrado ou sem permissão.' });
       }

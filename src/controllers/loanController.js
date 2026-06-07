@@ -30,7 +30,7 @@ const loanController = {
       if (!status) {
         return res.status(400).json({ message: 'O status é obrigatório.' });
       }
-      const loan = await appModel.updateLoanStatus(req.userId, id, status);
+      const loan = await appModel.updateLoanStatus(id, req.userId, status);
       if (!loan) {
         return res.status(404).json({ message: 'Empréstimo não encontrado ou sem permissão.' });
       }
