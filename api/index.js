@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-require('../src/config/db'); 
+const pool = require('../src/config/db'); 
 
 const authRoutes = require('../src/routes/authRoutes');
 const relationRoutes = require('../src/routes/relationRoutes');
@@ -18,11 +18,20 @@ app.use("/auth", authRoutes);
 app.use("/", relationRoutes);
 app.use("/", appRoutes);
 
-app.get("/users", authMiddleware, (req, res) => {
-  res.json({
-    message: "Rota protegida funcionando!",
-    userId: req.userId,
-  });
+app.get("/users", authMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query("SELECT id, name, email, created_at FROM users ORDER BY id ASC");
+    return res.json(result.rows);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Erro ao buscar usuarios do banco de dados.",
+      error: error.message
+    });
+  }
+});
+
+app.get('/', (req, res) => {
+  res.json({ message: "bem vindo a api do TrackIt!" });
 });
 
 const PORT = process.env.PORT || 3000;

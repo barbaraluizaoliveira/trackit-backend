@@ -34,14 +34,40 @@ const appModel = {
     return result.rowCount > 0; 
   },
 
-  findLoansByUserId: async (userId) => {
+  findLoansAsLender: async (userId) => {
     const query = `
-      SELECT l.*, i.name as item_name, u1.name as lender_name, u2.name as borrower_name
+      SELECT 
+        l.id,
+        i.name AS item_name,
+        u.name AS borrower_name,
+        u.email AS borrower_email,
+        l.due_date,
+        l.status,
+        l.created_at
       FROM loans l
       JOIN items i ON l.item_id = i.id
-      JOIN users u1 ON l.lender_id = u1.id
-      JOIN users u2 ON l.borrower_id = u2.id
-      WHERE l.lender_id = $1 OR l.borrower_id = $1
+      JOIN users u ON l.borrower_id = u.id
+      WHERE l.lender_id = $1
+      ORDER BY l.created_at DESC
+    `;
+    const result = await pool.query(query, [userId]);
+    return result.rows;
+  },
+
+  findLoansAsBorrower: async (userId) => {
+    const query = `
+      SELECT 
+        l.id,
+        i.name AS item_name,
+        u.name AS lender_name,
+        u.email AS lender_email,
+        l.due_date,
+        l.status,
+        l.created_at
+      FROM loans l
+      JOIN items i ON l.item_id = i.id
+      JOIN users u ON l.lender_id = u.id
+      WHERE l.borrower_id = $1
       ORDER BY l.created_at DESC
     `;
     const result = await pool.query(query, [userId]);
